@@ -1,4 +1,4 @@
-# lemp-webadmin - WIP / nonfunctional
+# lemp-webadmin - WIP
 Installs a LEMP stack on Ubuntu 20.04
 
 ```
