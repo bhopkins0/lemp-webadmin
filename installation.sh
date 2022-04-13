@@ -13,4 +13,4 @@ mysql --execute "CREATE USER 'nginxmanager'@'localhost' IDENTIFIED BY '$PASSWD';
 mysql --execute "GRANT ALL PRIVILEGES ON nginxmanager.* TO 'nginxmanager'@'localhost';"
 mysql --execute "FLUSH PRIVILEGES;";
 mysql --execute "USE nginxmanager; source mysqlsetup;";
-echo "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD";
+echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD";
