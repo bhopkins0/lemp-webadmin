@@ -27,14 +27,25 @@ sed -i "s#root.*#root /var/www/$domain;#" /etc/nginx/sites-enabled/$domain
 sed -i "s/server_name.*/server_name $domain;/" /etc/nginx/sites-enabled/$domain
 service nginx restart
 
-## Fill lempinfo Table (incomplete)
+## Config File Setup
 phpversion=$(php -v | grep "(cli)")
 mysqlversion=$(mysql --version)
-nginxversion=$(nginx -v)
+nginxversion=$(nginx -v 2>&1)
 managerversion="beta"
-#mysql --execute "INSERT INTO lempinfo VALUES ($phpversion, $mysqlversion, $nginxversion, $managerversion);" 
-# Does not work  ^^
 
+echo "<?php
+\$dbservername = 'localhost';
+\$dbusername = 'nginxmanager';
+\$dbpassword = '$PASSWD';
+\$dbname = 'nginxmanager';
+\$phpversion = '$phpversion';
+\$mysqlversion = '$mysqlversion';
+\$nginxversion = '$nginxversion';
+\$managerversion = 'beta';
+
+if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+  $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+}" > /var/www/config.php
 
 ## More stuff here to prepare the webadmin install
 
@@ -45,6 +56,4 @@ managerversion="beta"
 
 
 ## End of installation
-clear
-echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in a file named mysqlcred.txt in this directory.";
-echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD" > mysqlcred.txt
+echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in the configuration file (/var/www/config.php)";
