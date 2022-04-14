@@ -43,14 +43,13 @@ echo "<?php
 \$nginxversion = '$nginxversion';
 \$managerversion = 'beta';
 
-if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-  $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+if (isset(\$_SERVER['HTTP_CF_CONNECTING_IP'])) {
+  \$_SERVER['REMOTE_ADDR'] = \$_SERVER['HTTP_CF_CONNECTING_IP'];
 }" > /var/www/config.php
 
 ## More stuff here to prepare the webadmin install
 ctime=$(date +%s)
 mysql --execute "USE nginxmanager; INSERT INTO websites VALUES ('$domain', '$domain', '$ctime', 0);";
-chown -R www-data:www-data /var/www/$domain/
 
 ## Clean up
 rm mysqlsetup
@@ -61,4 +60,5 @@ wget -O /var/www/$domain/installation.php https://raw.githubusercontent.com/bhop
 
 
 ## End of installation
+clear
 echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in the configuration file (/var/www/config.php)\nYou will need to go to http://$domain/installation.php";
