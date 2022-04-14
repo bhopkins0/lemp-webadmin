@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../config.php';
+include '/var/www/config.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_POST["admin_user"])) {
                 $_SESSION["err"] = 8;
