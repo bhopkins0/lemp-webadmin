@@ -13,4 +13,35 @@ mysql --execute "CREATE USER 'nginxmanager'@'localhost' IDENTIFIED BY '$PASSWD';
 mysql --execute "GRANT ALL PRIVILEGES ON nginxmanager.* TO 'nginxmanager'@'localhost';"
 mysql --execute "FLUSH PRIVILEGES;";
 mysql --execute "USE nginxmanager; source mysqlsetup;";
-echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD";
+
+## nginx Setup
+sed -i "s/# server_tokens.*/server_tokens off;/" /etc/nginx/nginx.conf
+wget -O /etc/nginx/sites-enabled/default https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/default
+rm /var/www/html/index.nginx-debian.html
+clear
+echo "What domain will the manager be hosted on? (ex: manager.example.com)"
+read domain
+wget -O /etc/nginx/sites-enabled/$domain https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/example_nginxconf
+mkdir /var/www/$domain
+sed -i "s#root.*#root /var/www/$domain;#" /etc/nginx/sites-enabled/$domain
+sed -i "s/server_name.*/server_name $domain;/" /etc/nginx/sites-enabled/$domain
+service nginx restart
+
+## Fill lempinfo Table (incomplete)
+phpversion=$(php -v | grep "(cli)")
+mysqlversion=$(mysql --version)
+nginxversion=$(nginx -v)
+managerversion="beta"
+mysql --execute "INSERT INTO lempinfo VALUES ($phpversion, $mysqlversion, $nginxversion, $managerversion);"
+
+## More stuff here to prepare the webadmin install
+
+
+
+## Install the webadmin
+
+
+
+## End of installation
+echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in a file named mysqlcred.txt in this directory.";
+echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD" >>> mysqlcred.txt
