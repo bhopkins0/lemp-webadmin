@@ -48,7 +48,8 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
 }" > /var/www/config.php
 
 ## More stuff here to prepare the webadmin install
-
+$ctime = $(date +%s)
+mysql --execute "INSERT INTO websites VALUES ('$domain', '$domain', '$ctime', 0)";
 
 
 ## Install the webadmin
