@@ -55,8 +55,9 @@ mysql --execute "USE nginxmanager; INSERT INTO websites VALUES ('$domain', '$dom
 rm mysqlsetup
 
 ## Install the webadmin
-
+wget -O /var/www/$domain/bootstrap.min.css https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/bootstrap.min.css
+wget -O /var/www/$domain/installation.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/installation.php
 
 
 ## End of installation
-echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in the configuration file (/var/www/config.php)";
+echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in the configuration file (/var/www/config.php)\nYou will need to go to http://$domain/installation.php";
