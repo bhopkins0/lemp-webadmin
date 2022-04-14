@@ -32,7 +32,9 @@ phpversion=$(php -v | grep "(cli)")
 mysqlversion=$(mysql --version)
 nginxversion=$(nginx -v)
 managerversion="beta"
-mysql --execute "INSERT INTO lempinfo VALUES ($phpversion, $mysqlversion, $nginxversion, $managerversion);"
+#mysql --execute "INSERT INTO lempinfo VALUES ($phpversion, $mysqlversion, $nginxversion, $managerversion);" 
+# Does not work  ^^
+
 
 ## More stuff here to prepare the webadmin install
 
@@ -43,5 +45,6 @@ mysql --execute "INSERT INTO lempinfo VALUES ($phpversion, $mysqlversion, $nginx
 
 
 ## End of installation
+clear
 echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD\nThis will be stored in a file named mysqlcred.txt in this directory.";
-echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD" >>> mysqlcred.txt
+echo -e "Your MySQL username is: nginxmanager \nYour MySQL password is: $PASSWD" > mysqlcred.txt
