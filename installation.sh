@@ -56,7 +56,7 @@ rm mysqlsetup
 
 ## Install the webadmin
 mkdir /var/www/$domain/resources/
-wget -O /var/www/$domain/resources/bootstrap.min.css https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/bootstrap.min.css
+wget -O /var/www/$domain/resources/bootstrap.min.css https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/bootstrap.min.css
 wget -O /var/www/$domain/installation.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/installation.php
 chown -R www-data:www-data /var/www/$domain
 
