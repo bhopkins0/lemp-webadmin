@@ -13,3 +13,4 @@ chmod +x installation.sh && bash installation.sh
 * detect and support multiple php versions
 * create functions
 * dashboard
+* support let's encrypt
