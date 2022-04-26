@@ -97,8 +97,6 @@ function authenticateUser($username, $password, $confirmpassword) {
     }
 
     $username = strtolower($username);
-
-    // Insert MySQL here
     $conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
     $sql = "SELECT password FROM accounts WHERE username='$username'";
     $result = $conn->query($sql);
