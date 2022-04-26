@@ -1,6 +1,6 @@
 ## General Installation
 apt update && apt upgrade
-apt install wget nginx mysql-server php7.4-fpm php-mysql php-common
+apt install wget nginx mysql-server php7.4-fpm php-mysql php-common ## change php7.4-fpm to php-fpm if this line doesnt work
 clear
 
 ## MySQL Setup
