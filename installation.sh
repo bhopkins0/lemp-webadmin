@@ -49,7 +49,7 @@ if (isset(\$_SERVER['HTTP_CF_CONNECTING_IP'])) {
 
 ## More stuff here to prepare the webadmin install
 ctime=$(date +%s)
-mysql --execute "USE nginxmanager; INSERT INTO websites VALUES ('$domain', '$domain', '$ctime', 0);";
+mysql --execute "USE nginxmanager; INSERT INTO websites VALUES ('$domain', '$domain', $ctime);";
 
 ## Clean up
 rm mysqlsetup
