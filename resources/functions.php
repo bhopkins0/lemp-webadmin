@@ -3,7 +3,6 @@
 function isValidDomain($domain) {
     include '/var/www/config.php';
     if (!preg_match("/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/", $domain) || strlen($domain) > 253) {
-        // Regex for domain - this is not perfect
         return false;
     } else {
         $conn = mysqli_connect($dbservername, $dbusername, $dbpassword, $dbname);
@@ -13,7 +12,6 @@ function isValidDomain($domain) {
         $sql = "SELECT url FROM websites WHERE url='$domain'";
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0) {
-            // Domain already in use
             return false;
         }
         mysqli_close($conn);
@@ -61,4 +59,19 @@ function addDomainToDatabase($name, $domain) {
         }
         $conn->close();
     }
+}
+
+function retrieveWebsites() {
+    include '/var/www/config.php';
+    $conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
+    $sql = "SELECT * FROM websites";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $websites = array();
+        while($row = $result->fetch_assoc()) {
+            array_push($websites, array($row[name],$row[url], $row[creation_time]));
+        }
+    }
+    mysqli_close($conn);
+    return $websites;
 }
