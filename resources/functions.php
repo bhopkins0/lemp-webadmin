@@ -1,8 +1,10 @@
 <?php
+session_start();
 
 function isValidDomain($domain) {
     include '/var/www/config.php';
     if (!preg_match("/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/", $domain) || strlen($domain) > 253) {
+        // Regex for domain - this is not perfect
         return false;
     } else {
         $conn = mysqli_connect($dbservername, $dbusername, $dbpassword, $dbname);
@@ -12,6 +14,7 @@ function isValidDomain($domain) {
         $sql = "SELECT url FROM websites WHERE url='$domain'";
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0) {
+            // Domain already in use
             return false;
         }
         mysqli_close($conn);
@@ -74,4 +77,42 @@ function retrieveWebsites() {
     }
     mysqli_close($conn);
     return $websites;
+}
+
+function authenticateUser($username, $password, $confirmpassword) {
+    include '/var/www/config.php';
+
+    // 0 - Success
+    // 1 - Passwords do not match
+    // 2 - Invalid username or password
+
+    if ($password !== $confirmpassword) {
+        return 1;
+    }
+    if (preg_match('/[^a-z_\-0-9]/i', $username) || strlen($username) > 32) {
+        return 2;
+    }
+    if (strlen($password) > 50 || strlen($password) < 8) {
+        return 2;
+    }
+
+    $username = strtolower($username);
+
+    // Insert MySQL here
+    $conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
+    $sql = "SELECT password FROM accounts WHERE username='$username'";
+    $result = $conn->query($sql);
+    if (mysqli_num_rows($result) > 0) {
+        while($row = $result->fetch_assoc()) {
+            if (password_verify($password, $row["password"])) {
+                $_SESSION["auth"]  = true;
+                $_SESSION["user"]  = $username;
+                $_SESSION["key"] = random_int(1,9999999999); // Idea here is to prevent potential CSRF attack
+                return 0;
+            } else {
+                return 2;
+            }
+        }
+    }
+    mysqli_close($conn);
 }
