@@ -4,7 +4,6 @@ session_start();
 function isValidDomain($domain) {
     include '/var/www/config.php';
     if (!preg_match("/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/", $domain) || strlen($domain) > 253) {
-        // Regex for domain - this is not perfect
         return false;
     } else {
         $conn = mysqli_connect($dbservername, $dbusername, $dbpassword, $dbname);
@@ -79,21 +78,46 @@ function retrieveWebsites() {
     return $websites;
 }
 
-function authenticateUser($username, $password, $confirmpassword) {
+function retrieveServices() {
+    include '/var/www/config.php';
+    $services = array();
+
+    // This will need to be changed to support PHP versions other than 7.4
+    // May move away from shell_exec if I can find an alternative
+    if (strstr(shell_exec("service php7.4-fpm status"), 'Active: active (running)')) {
+        $phpstatus = "<p class='text-success'>Online</p>";
+    } else {
+        $phpstatus = "<p class='text-danger'>Offline</p>";
+    }
+
+    if (strstr(shell_exec("service nginx status"), 'Active: active (running)')) {
+        $nginxstatus = "<p class='text-success'>Online</p>";
+    } else {
+        $nginxstatus = "<p class='text-danger'>Offline</p>";
+    }
+
+    if (strstr(shell_exec("service mysql status"), 'Active: active (running)')) {
+        $mysqlstatus = "<p class='text-success'>Online</p>";
+    } else {
+        $mysqlstatus = "<p class='text-danger'>Offline</p>";
+    }
+
+
+    array_push($services, array("PHP",$phpstatus, $phpversion));
+    array_push($services, array("nginx",$nginxstatus, $nginxversion));
+    array_push($services, array("MySQL",$mysqlstatus, $mysqlversion));
+    array_push($services, array("LEMP Manager","<p class='text-success'>Online</p>", $managerversion));
+    return $services;
+}
+
+function authenticateUser($username, $password) {
     include '/var/www/config.php';
 
-    // 0 - Success
-    // 1 - Passwords do not match
-    // 2 - Invalid username or password
-
-    if ($password !== $confirmpassword) {
-        return 1;
-    }
-    if (preg_match('/[^a-z_\-0-9]/i', $username) || strlen($username) > 32) {
-        return 2;
+    if (!preg_match('/^[A-Za-z0-9]+$/', $username) || strlen($username) > 32) {
+        return false;
     }
     if (strlen($password) > 50 || strlen($password) < 8) {
-        return 2;
+        return false;
     }
 
     $username = strtolower($username);
@@ -106,11 +130,39 @@ function authenticateUser($username, $password, $confirmpassword) {
                 $_SESSION["auth"]  = true;
                 $_SESSION["user"]  = $username;
                 $_SESSION["key"] = random_int(1,9999999999); // Idea here is to prevent potential CSRF attack
-                return 0;
+                return true;
             } else {
-                return 2;
+                return false;
             }
         }
     }
     mysqli_close($conn);
 }
+
+function logoutUser($key) {
+    // 0 - Success
+    // 1 - Invalid Key
+
+    if ($key == $_SESSION['key']) {
+        unset($_SESSION['auth']);
+        unset($_SESSION['user']);
+        unset($_SESSION['key']);
+        session_destroy();
+        session_write_close();
+        setcookie(session_name(),'',0,'/');
+        session_regenerate_id(true);
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+function isAuthenticated(): bool {
+    if ($_SESSION['auth']) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
