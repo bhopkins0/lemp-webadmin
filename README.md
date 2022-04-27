@@ -10,5 +10,6 @@ chmod +x installation.sh && bash installation.sh
 # Todo:
 
 * detect and support multiple php versions
+* table on homepage has domain and name mixed up
 * dashboard
 * support let's encrypt
