@@ -58,7 +58,11 @@ rm mysqlsetup
 mkdir /var/www/$domain/resources/
 wget -O /var/www/$domain/resources/functions.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/functions.php
 wget -O /var/www/$domain/resources/bootstrap.min.css https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/bootstrap.min.css
+wget -O /var/www/$domain/resources/bootstrap.bundle.min.js https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/home.php
 wget -O /var/www/$domain/installation.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/installation.php
+wget -O /var/www/$domain/index.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/index.php
+wget -O /var/www/$domain/home.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/home.php
+wget -O /var/www/$domain/sysinfo.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/sysinfo.php
 chown -R www-data:www-data /var/www/$domain
 
 ## End of installation
