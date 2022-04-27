@@ -22,8 +22,8 @@ clear
 echo "What domain will the manager be hosted on? (ex: manager.example.com)"
 read domain
 wget -O /etc/nginx/sites-enabled/$domain https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/example_nginxconf
-mkdir /var/www/$domain
-sed -i "s#root.*#root /var/www/$domain;#" /etc/nginx/sites-enabled/$domain
+mkdir /var/www/nginxmanager
+sed -i "s#root.*#root /var/www/nginxmanager;#" /etc/nginx/sites-enabled/$domain
 sed -i "s/server_name.*/server_name $domain;/" /etc/nginx/sites-enabled/$domain
 service nginx restart
 
@@ -42,28 +42,25 @@ echo "<?php
 \$mysqlversion = '$mysqlversion';
 \$nginxversion = '$nginxversion';
 \$managerversion = 'beta';
-
-if (isset(\$_SERVER['HTTP_CF_CONNECTING_IP'])) {
-  \$_SERVER['REMOTE_ADDR'] = \$_SERVER['HTTP_CF_CONNECTING_IP'];
-}" > /var/www/config.php
+" > /var/www/config.php
 
 ## More stuff here to prepare the webadmin install
 ctime=$(date +%s)
-mysql --execute "USE nginxmanager; INSERT INTO websites VALUES ('$domain', '$domain', '$ctime');";
+mysql --execute "USE nginxmanager; INSERT INTO websites VALUES ('$domain', 'nginxmanager', '$ctime');";
 
 ## Clean up
 rm mysqlsetup
 
 ## Install the webadmin
-mkdir /var/www/$domain/resources/
-wget -O /var/www/$domain/resources/functions.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/functions.php
-wget -O /var/www/$domain/resources/bootstrap.min.css https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/bootstrap.min.css
-wget -O /var/www/$domain/resources/bootstrap.bundle.min.js https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/home.php
-wget -O /var/www/$domain/installation.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/installation.php
-wget -O /var/www/$domain/index.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/index.php
-wget -O /var/www/$domain/home.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/home.php
-wget -O /var/www/$domain/sysinfo.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/sysinfo.php
-chown -R www-data:www-data /var/www/$domain
+mkdir /var/www/nginxmanager/resources/
+wget -O /var/www/nginxmanager/resources/functions.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/functions.php
+wget -O /var/www/nginxmanager/resources/bootstrap.min.css https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/resources/bootstrap.min.css
+wget -O /var/www/nginxmanager/resources/bootstrap.bundle.min.js https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/home.php
+wget -O /var/www/nginxmanager/installation.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/installation.php
+wget -O /var/www/nginxmanager/index.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/index.php
+wget -O /var/www/nginxmanager/home.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/home.php
+wget -O /var/www/nginxmanager/sysinfo.php https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/webadmin/sysinfo.php
+chown -R www-data:www-data /var/www/nginxmanager
 
 ## End of installation
 clear
