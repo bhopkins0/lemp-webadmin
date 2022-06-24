@@ -84,7 +84,7 @@ function retrieveServices() {
 
     // This will need to be changed to support PHP versions other than 7.4
     // May move away from shell_exec if I can find an alternative
-    if (strstr(shell_exec("service php7.4-fpm status"), 'Active: active (running)')) {
+    if (strstr(shell_exec("service php8.1-fpm status"), 'Active: active (running)')) {
         $phpstatus = "<p class='text-success'>Online</p>";
     } else {
         $phpstatus = "<p class='text-danger'>Offline</p>";
