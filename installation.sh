@@ -1,11 +1,14 @@
 ## General Installation
 apt update && apt upgrade
-apt install wget nginx mysql-server php8.1-fpm php-mysql php-common ## change php7.4-fpm to php-fpm if this line doesnt work
+apt install wget nginx mysql-server php8.1-fpm php-mysql php-common
 clear
 
 ## MySQL Setup
 PASSWD=$(sed "s/[^a-zA-Z0-9]//g" <<< $(cat /dev/urandom | tr -dc 'a-zA-Z0-9!@#$%*()-+' | fold -w 15 | head -n 1))"!"
-mysql_secure_installation
+ROOTPASSWD=$(sed "s/[^a-zA-Z0-9]//g" <<< $(cat /dev/urandom | tr -dc 'a-zA-Z0-9!@#$%*()-+' | fold -w 15 | head -n 1))"?"
+mysql --execute "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by '$ROOTPASSWD';"
+export MYSQL_PWD="$ROOTPASSWD" 
+mysql_secure_installation --password=$ROOTPASSWD --use-default
 wget -O mysqlsetup https://raw.githubusercontent.com/bhopkins0/lemp-webadmin/main/mysqlsetup
 clear
 mysql --execute "CREATE DATABASE nginxmanager;"
